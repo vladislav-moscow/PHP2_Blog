@@ -11,19 +11,23 @@ class Comment
         private string $text
     ) {}
 
-    public function getId() {
+    public function getId(): int
+    {
         return $this->id;
     }
 
-    public function getPostId() {
+    public function getPostId(): int
+    {
         return $this->post_id;
     }
 
-    public function getAuthorId() {
+    public function getAuthorId(): int
+    {
         return $this->author_id;
     }
 
-    public function getText() {
+    public function getText(): string
+    {
         return $this->text;
     }
 

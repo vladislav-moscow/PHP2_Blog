@@ -9,7 +9,8 @@
     "require": {
         "php": "^8.0",
         "ext-pdo": "*",
-        "symfony/polyfill-uuid": "^1.23"
+        "symfony/polyfill-uuid": "^1.23",
+      "ext-mbstring": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",

@@ -12,6 +12,6 @@ try {
     $commandFactory = new CommandFactory();
     $command = $commandFactory->create($argv[1], $repository);
     $command->handle(Arguments::fromArgv($argv));
-} catch (\Throwable $th) {
+} catch (Throwable $th) {
     echo "{$th->getMessage()}\n";
 }

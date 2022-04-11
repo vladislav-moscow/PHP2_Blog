@@ -1,0 +1,16 @@
+#GET http://127.0.0.1:8000/some/page
+
+#GET http://127.0.0.1:8000/users/show?username=ivan
+
+#GET http://127.0.0.1:8000/posts/show?id=1
+
+#POST http://127.0.0.1:8000/posts/create
+#
+#{
+#"author_id": "40",
+#"text": "some text",
+#"title": "some title"
+#}
+
+
+

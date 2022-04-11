@@ -11,19 +11,23 @@ class Post
         private string $text
     ) {}
 
-    public function getId() {
+    public function getId(): int
+    {
         return $this->id;
     }
 
-    public function getAuthorId() {
+    public function getAuthorId(): int
+    {
         return $this->author_id;
     }
 
-    public function getTitle() {
+    public function getTitle(): string
+    {
         return $this->title;
     }
 
-    public function getText() {
+    public function getText(): string
+    {
         return $this->text;
     }
 
