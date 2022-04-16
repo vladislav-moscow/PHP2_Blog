@@ -2,3 +2,5 @@ vendor/
 .logs/
 .env
 .phpunit.result.cache
+.idea
+.vscode
