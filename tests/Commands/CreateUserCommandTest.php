@@ -1,20 +1,21 @@
 <?php
 
-namespace GeekBrains\Blog\UnitTests\Commands;
+namespace Commands;
 
 use GeekBrains\Blog\Commands\Arguments;
+use GeekBrains\Blog\Commands\DummyLogger;
 use GeekBrains\Blog\Exceptions\CommandException;
 use GeekBrains\Blog\Exceptions\UserNotFoundException;
 use GeekBrains\Blog\Exceptions\ArgumentsException;
 use GeekBrains\Blog\Commands\CreateUserCommand;
+use GeekBrains\Blog\Like;
 use GeekBrains\Blog\Repositories\UsersRepositoryInterface;
-use GeekBrains\Blog\Repositories\DummyUsersRepository;
 use GeekBrains\Blog\User;
 use PHPUnit\Framework\TestCase;
 
 class CreateUserCommandTest extends TestCase
 {
-    private function getAnonymUsersRepository(): UsersRepositoryInterface {
+    private function getAnonymousUsersRepository(): UsersRepositoryInterface {
         return new class implements UsersRepositoryInterface 
         {
             public function save(User $user): void {}
@@ -28,43 +29,32 @@ class CreateUserCommandTest extends TestCase
             {
                 throw new UserNotFoundException("User not found");
             }
+
+            public function getByPostId(int $id): Like
+            {
+                // TODO: Implement getByPostId() method.
+            }
+
+            public function delete(int $id): void
+            {
+                // TODO: Implement delete() method.
+            }
         };
     }
 
-    // Проверяем, что команда создания пользователя бросает исключение,
-    // если пользователь с таким именем уже существует
-    public function testItThrowsAnExceptionWhenUserAlreadyExists(): void
-    {
-        // Создаём объект команды
-        // У команды одна зависимость - UsersRepositoryInterface
-        $command = new CreateUserCommand(
-            // Передаём наш стаб в качестве реализации UsersRepositoryInterface
-            new DummyUsersRepository()
-        );
-
-        // Описываем тип ожидаемого исключения
-        $this->expectException(CommandException::class);
-        // и его сообщение
-        $this->expectExceptionMessage('User already exists: Ivan');
-
-        // Запускаем команду с аргументами
-        $command->handle(new Arguments(['username' => 'Ivan']));
-    }
-
     // Тест проверяет, что команда действительно требует имя пользователя
-
-    /**
-     * @throws CommandException
-     */
     public function testItRequiresFirstName(): void
     {
         // $usersRepository - это объект анонимного класса,
         // реализующего контракт UsersRepositoryInterface
-        $usersRepository = $this->getAnonymUsersRepository();
+        $usersRepository = $this->getAnonymousUsersRepository();
 
         // Передаём объект анонимного класса
         // в качестве реализации UsersRepositoryInterface
-        $command = new CreateUserCommand($usersRepository);
+        $command = new CreateUserCommand(
+            $usersRepository,
+            new DummyLogger()
+        );
 
         // Ожидаем, что будет брошено исключение
         $this->expectException(ArgumentsException::class);
@@ -75,14 +65,13 @@ class CreateUserCommandTest extends TestCase
     }
 
     // Тест проверяет, что команда действительно требует фамилию пользователя
-
-    /**
-     * @throws CommandException
-     */
     public function testItRequiresLastName(): void
     {
         // Передаём в конструктор команды объект, возвращаемый нашей функцией
-        $command = new CreateUserCommand($this->getAnonymUsersRepository());
+        $command = new CreateUserCommand(
+            $this->getAnonymousUsersRepository(),
+            new DummyLogger()
+        );
         $this->expectException(ArgumentsException::class);
         $this->expectExceptionMessage('No such argument: last_name');
         $command->handle(new Arguments([
@@ -94,8 +83,8 @@ class CreateUserCommandTest extends TestCase
     }
 
     // Тест, проверяющий, что команда сохраняет пользователя в репозитории
-
     /**
+     * @throws ArgumentsException
      * @throws CommandException
      */
     public function testItSavesUserToRepository(): void
@@ -130,10 +119,23 @@ class CreateUserCommandTest extends TestCase
             {
                 return $this->called;
             }
+
+            public function getByPostId(int $id): Like
+            {
+                // TODO: Implement getByPostId() method.
+            }
+
+            public function delete(int $id): void
+            {
+                // TODO: Implement delete() method.
+            }
         };
 
         // Передаём наш мок в команду
-        $command = new CreateUserCommand($usersRepository);
+        $command = new CreateUserCommand(
+            $usersRepository,
+            new DummyLogger()
+        );
 
         // Запускаем команду
         $command->handle(new Arguments([

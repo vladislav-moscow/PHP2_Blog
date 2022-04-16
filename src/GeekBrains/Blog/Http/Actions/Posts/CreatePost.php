@@ -12,6 +12,7 @@ use GeekBrains\Blog\Post;
 use GeekBrains\Blog\Repositories\PostsRepositoryInterface;
 use GeekBrains\Blog\Exceptions\UserNotFoundException;
 use GeekBrains\Blog\Repositories\UsersRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 class CreatePost implements ActionInterface
 {
@@ -19,6 +20,8 @@ class CreatePost implements ActionInterface
     public function __construct(
         private PostsRepositoryInterface $postsRepository,
         private UsersRepositoryInterface $usersRepository,
+        // Внедряем контракт логгера
+        private LoggerInterface $logger,
     ) {}
 
     public function handle(Request $request): Response
@@ -52,6 +55,9 @@ class CreatePost implements ActionInterface
 
         // Сохраняем новую статью в репозитории
         $this->postsRepository->save($post);
+
+        // Логируем создание новой статьи
+        $this->logger->info("Post created by: $authorId");
 
         // Возвращаем успешный ответ,
         // содержащий id новой статьи

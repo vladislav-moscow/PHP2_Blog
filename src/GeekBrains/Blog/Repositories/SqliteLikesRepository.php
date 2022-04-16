@@ -5,7 +5,6 @@ namespace GeekBrains\Blog\Repositories;
 use GeekBrains\Blog\Exceptions\LikeException;
 use GeekBrains\Blog\Exceptions\LikeNotFoundException;
 use GeekBrains\Blog\Like;
-use GeekBrains\Blog\User;
 use PDO;
 
 class SqliteLikesRepository extends SqliteRepository implements LikesRepositoryInterface
@@ -49,7 +48,7 @@ class SqliteLikesRepository extends SqliteRepository implements LikesRepositoryI
     /**
      * @throws LikeNotFoundException
      */
-    public function getByPostId(int $id): array
+    public function getByPostId(int $id): Like
     {
         $statement = $this->connection->prepare(
             'SELECT * FROM likes WHERE post_id = :id'
@@ -76,20 +75,5 @@ class SqliteLikesRepository extends SqliteRepository implements LikesRepositoryI
         }
 
         return $likes;
-    }
-
-    public function delete(int $id): void
-    {
-        // TODO: Implement delete() method.
-    }
-
-    public function get(int $id): User
-    {
-        // TODO: Implement get() method.
-    }
-
-    public function getByUsername(string $username): User
-    {
-        // TODO: Implement getByUsername() method.
     }
 }

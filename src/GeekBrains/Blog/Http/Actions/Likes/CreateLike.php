@@ -14,6 +14,7 @@ use GeekBrains\Blog\Like;
 use GeekBrains\Blog\Repositories\LikesRepositoryInterface;
 use GeekBrains\Blog\Repositories\PostsRepositoryInterface;
 use GeekBrains\Blog\Repositories\UsersRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 class CreateLike implements ActionInterface
 {
@@ -22,6 +23,8 @@ class CreateLike implements ActionInterface
         private LikesRepositoryInterface $likesRepository,
         private PostsRepositoryInterface $postsRepository,
         private UsersRepositoryInterface $usersRepository,
+        // Внедряем контракт логгера
+        private LoggerInterface $logger,
     ) {}
 
     public function handle(Request $request): Response
@@ -67,10 +70,13 @@ class CreateLike implements ActionInterface
             return new ErrorResponse($e->getMessage());
         }
 
+        // Логируем создание нового лайка
+        $this->logger->info("User: $userId liked post: $postId");
+
         // Возвращаем успешный ответ, содержащий id нового лайка
         return new SuccessfulResponse([
-            'post_id' => (string)$like->getPostId(),
-            'user_id' => (string)$like->getUserId(),
+            'post_id' => $postId,
+            'user_id' => $userId,
         ]);
     }
 }

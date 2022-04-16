@@ -2,8 +2,8 @@
 
 namespace GeekBrains\Blog\Repositories;
 
+use GeekBrains\config\SqliteConfig;
 use PDO;
-use GeekBrains\Blog\config\SqliteConfig;
 
 class SqliteRepository implements RepositoryInterface
 {

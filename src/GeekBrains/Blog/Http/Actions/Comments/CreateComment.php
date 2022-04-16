@@ -14,6 +14,7 @@ use GeekBrains\Blog\Http\SuccessfulResponse;
 use GeekBrains\Blog\Repositories\CommentsRepositoryInterface;
 use GeekBrains\Blog\Repositories\PostsRepositoryInterface;
 use GeekBrains\Blog\Repositories\UsersRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 class CreateComment implements ActionInterface
 {
@@ -22,6 +23,8 @@ class CreateComment implements ActionInterface
         private CommentsRepositoryInterface $commentsRepository,
         private PostsRepositoryInterface $postsRepository,
         private UsersRepositoryInterface $usersRepository,
+        // Внедряем контракт логгера
+        private LoggerInterface $logger,
     ) {}
 
     public function handle(Request $request): Response
@@ -30,6 +33,7 @@ class CreateComment implements ActionInterface
         try {
             $authorId = $request->jsonBodyField('author_id');
             $postId = $request->jsonBodyField('post_id');
+            $text = $request->jsonBodyField('text');
         } catch (HttpException $e) {
             return new ErrorResponse($e->getMessage());
         }
@@ -54,7 +58,7 @@ class CreateComment implements ActionInterface
                 0,
                 $postId,
                 $authorId,
-                $request->jsonBodyField('text'),
+                $text,
             );
         } catch (HttpException $e) {
             return new ErrorResponse($e->getMessage());
@@ -62,6 +66,9 @@ class CreateComment implements ActionInterface
 
         // Сохраняем новый комментарий в репозитории
         $this->commentsRepository->save($comment);
+
+        // Логируем создание новой комментария
+        $this->logger->info("Comment created: $text");
 
         // Возвращаем успешный ответ, содержащий id нового комментария
         return new SuccessfulResponse([

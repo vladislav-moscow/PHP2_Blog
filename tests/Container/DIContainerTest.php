@@ -13,7 +13,7 @@ class DIContainerTest extends TestCase
     public function testItThrowsAnExceptionIfCannotResolveType(): void
     {
         // Создаём объект контейнера
-        $container = new DIContainer();
+        $container = DIContainer::getInstance();
         // Описываем ожидаемое исключение
         $this->expectException(NotFoundException::class);
         $this->expectExceptionMessage(
@@ -29,7 +29,7 @@ class DIContainerTest extends TestCase
     public function testItResolvesClassWithoutDependencies(): void
     {
         // Создаём объект контейнера
-        $container = new DIContainer();
+        $container = DIContainer::getInstance();
         // Пытаемся получить объект класса без зависимостей
         $object = $container->get(SomeClassWithoutDependencies::class);
         // Проверяем, что объект, который вернул контейнер,
@@ -46,7 +46,7 @@ class DIContainerTest extends TestCase
     public function testItResolvesClassByContract(): void
     {
         // Создаём объект контейнера
-        $container = new DIContainer();
+        $container = DIContainer::getInstance();
 
         // Устанавливаем правило, по которому
         // всякий раз, когда контейнеру нужно
@@ -76,7 +76,7 @@ class DIContainerTest extends TestCase
     public function testItReturnsPredefinedObject(): void
     {
         // Создаём объект контейнера
-        $container = new DIContainer();
+        $container = DIContainer::getInstance();
 
         // Устанавливаем правило, по которому
         // всякий раз, когда контейнеру нужно
@@ -108,7 +108,7 @@ class DIContainerTest extends TestCase
     public function testItResolvesClassWithDependencies(): void
     {
         // Создаём объект контейнера
-        $container = new DIContainer();
+        $container = DIContainer::getInstance();
 
         // Устанавливаем правило получения
         // объекта типа SomeClassWithParameter

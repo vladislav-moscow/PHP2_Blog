@@ -10,6 +10,7 @@ use GeekBrains\Blog\Http\Response;
 use GeekBrains\Blog\Http\SuccessfulResponse;
 use GeekBrains\Blog\Exceptions\UserNotFoundException;
 use GeekBrains\Blog\Repositories\UsersRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 // Класс реализует контракт действия
 class FindByUsername implements ActionInterface
@@ -17,7 +18,8 @@ class FindByUsername implements ActionInterface
     // Нам понадобится репозиторий пользователей,
     // внедряем его контракт в качестве зависимости
     public function __construct(
-        private UsersRepositoryInterface $usersRepository
+        private UsersRepositoryInterface $usersRepository,
+        private LoggerInterface $logger,
     ) {}
 
     // Функция, описанная в контракте
@@ -36,6 +38,8 @@ class FindByUsername implements ActionInterface
             // Пытаемся найти пользователя в репозитории
             $user = $this->usersRepository->getByUsername($username);
         } catch (UserNotFoundException $e) {
+            // Логируем id ненайденного пользователя
+            $this->logger->warning("User: $username not found");
             // Если пользователь не найден -
             // возвращаем неуспешный ответ
             return new ErrorResponse($e->getMessage());

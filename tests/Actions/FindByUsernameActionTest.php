@@ -2,14 +2,15 @@
 
 namespace Actions;
 
+use GeekBrains\Blog\Commands\DummyLogger;
 use GeekBrains\Blog\Http\Actions\Users\FindByUsername;
 use GeekBrains\Blog\Http\ErrorResponse;
 use GeekBrains\Blog\Http\Request;
 use GeekBrains\Blog\Http\SuccessfulResponse;
 use GeekBrains\Blog\Exceptions\UserNotFoundException;
+use GeekBrains\Blog\Like;
 use GeekBrains\Blog\Repositories\UsersRepositoryInterface;
 use GeekBrains\Blog\User;
-use JsonException;
 use PHPUnit\Framework\TestCase;
 
 class FindByUsernameActionTest extends TestCase
@@ -18,7 +19,6 @@ class FindByUsernameActionTest extends TestCase
     /**
      * @runInSeparateProcess
      * @preserveGlobalState disabled
-     * @throws JsonException
      */
     // Тест, проверяющий, что будет возвращён неудачный ответ,
     // если в запросе нет параметра username
@@ -31,7 +31,10 @@ class FindByUsernameActionTest extends TestCase
         // Создаём стаб репозитория пользователей
         $usersRepository = $this->usersRepository([]);
         //Создаём объект действия
-        $action = new FindByUsername($usersRepository);
+        $action = new FindByUsername(
+            $usersRepository,
+            new DummyLogger()
+        );
         // Запускаем действие
         $response = $action->handle($request);
         // Проверяем, что ответ - неудачный
@@ -47,7 +50,6 @@ class FindByUsernameActionTest extends TestCase
     /**
      * @runInSeparateProcess
      * @preserveGlobalState disabled
-     * @throws JsonException
      */
     // Тест, проверяющий, что будет возвращён неудачный ответ,
     // если пользователь не найден
@@ -57,7 +59,10 @@ class FindByUsernameActionTest extends TestCase
         $request = new Request(['username' => 'ivan'], [], '');
         // Репозиторий пользователей по-прежнему пуст
         $usersRepository = $this->usersRepository([]);
-        $action = new FindByUsername($usersRepository);
+        $action = new FindByUsername(
+            $usersRepository,
+            new DummyLogger()
+        );
         $response = $action->handle($request);
         $this->assertInstanceOf(ErrorResponse::class, $response);
         $this->expectOutputString('{"success":false,"reason":"Not found"}');
@@ -67,7 +72,6 @@ class FindByUsernameActionTest extends TestCase
     /**
      * @runInSeparateProcess
      * @preserveGlobalState disabled
-     * @throws JsonException
      */
     // Тест, проверяющий, что будет возвращён удачный ответ,
     // если пользователь найден
@@ -83,7 +87,10 @@ class FindByUsernameActionTest extends TestCase
                 'Nikitin'
             ),
         ]);
-        $action = new FindByUsername($usersRepository);
+        $action = new FindByUsername(
+            $usersRepository,
+            new DummyLogger()
+        );
         $response = $action->handle($request);
         // Проверяем, что ответ - удачный
         $this->assertInstanceOf(SuccessfulResponse::class, $response);
@@ -119,6 +126,16 @@ class FindByUsernameActionTest extends TestCase
                     }
                 }
                 throw new UserNotFoundException("Not found");
+            }
+
+            public function getByPostId(int $id): Like
+            {
+                // TODO: Implement getByPostId() method.
+            }
+
+            public function delete(int $id): void
+            {
+                // TODO: Implement delete() method.
             }
         };
     }

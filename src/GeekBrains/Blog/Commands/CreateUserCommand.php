@@ -4,26 +4,34 @@ namespace GeekBrains\Blog\Commands;
 
 use GeekBrains\Blog\Exceptions\ArgumentsException;
 use GeekBrains\Blog\Exceptions\UserNotFoundException;
-use GeekBrains\Blog\Exceptions\CommandException;
 use GeekBrains\Blog\Repositories\UsersRepositoryInterface;
 use GeekBrains\Blog\User;
+use Psr\Log\LoggerInterface;
 
 class CreateUserCommand implements CommandInterface
 {
     public function __construct(
-        private UsersRepositoryInterface $usersRepository
+        private UsersRepositoryInterface $usersRepository,
+        // Добавили зависимость от логгера
+        private LoggerInterface $logger,
     ) {}
 
     /**
      * @throws ArgumentsException
-     * @throws CommandException
      */
     public function handle(Arguments $arguments): void
-    { 
+    {
+        // Логируем информацию о том, что команда запущена
+        // Уровень логирования – INFO
+        $this->logger->info("Create user command started");
+
         $username = $arguments->get('username');
 
         if ($this->userExists($username)) {
-            throw new CommandException("User already exists: $username");
+            // Логируем сообщение с уровнем WARNING
+            $this->logger->warning("User already exists: $username");
+            // Вместо выбрасывания исключения просто выходим из функции
+            return;
         }
 
         $this->usersRepository->save(new User(
@@ -32,6 +40,9 @@ class CreateUserCommand implements CommandInterface
             $arguments->get('first_name'), 
             $arguments->get('last_name')
         ));
+
+        // Логируем информацию о новом пользователе
+        $this->logger->info("User created: $username");
     }
 
     private function userExists(string $username): bool

@@ -2,12 +2,17 @@
 
 namespace GeekBrains\Blog\Container;
 
+use GeekBrains\Traits\Instance;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
 // Контейнер реализует контракт, отписанный в PSR-11
 class DIContainer implements ContainerInterface
 {
+    use Instance;
+
+    private function __construct() {}
+
     // Массив правил создания объектов
     private array $resolvers = [];
 

@@ -10,6 +10,7 @@ use GeekBrains\Blog\Http\Response;
 use GeekBrains\Blog\Http\SuccessfulResponse;
 use GeekBrains\Blog\Exceptions\PostNotFoundException;
 use GeekBrains\Blog\Repositories\PostsRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 // Класс реализует контракт действия
 class FindById implements ActionInterface
@@ -17,7 +18,8 @@ class FindById implements ActionInterface
     // Нам понадобится репозиторий пользователей,
     // внедряем его контракт в качестве зависимости
     public function __construct(
-        private PostsRepositoryInterface $postsRepository
+        private PostsRepositoryInterface $postsRepository,
+        private LoggerInterface $logger,
     ) {}
 
     // Функция, описанная в контракте
@@ -36,6 +38,8 @@ class FindById implements ActionInterface
             // Пытаемся найти пользователя в репозитории
             $post = $this->postsRepository->get($id);
         } catch (PostNotFoundException $e) {
+            // Логируем id ненайденной статьи
+            $this->logger->warning("Post: $id not found");
             // Если пользователь не найден -
             // возвращаем неуспешный ответ
             return new ErrorResponse($e->getMessage());
