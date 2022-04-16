@@ -23,7 +23,7 @@ class CreatePost implements ActionInterface
 
     public function handle(Request $request): Response
     {
-        // Пытаемся создать UUID пользователя из данных запроса
+        // Пытаемся создать ID пользователя из данных запроса
         try {
             $authorId = $request->jsonBodyField('author_id');
         } catch (HttpException $e) {

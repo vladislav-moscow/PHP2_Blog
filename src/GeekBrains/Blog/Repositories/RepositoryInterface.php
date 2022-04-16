@@ -2,4 +2,5 @@
 
 namespace GeekBrains\Blog\Repositories;
 
-interface RepositoryInterface {}
+interface RepositoryInterface extends \GeekBrains\Blog\Repositories\UsersRepositoryInterface, \GeekBrains\Blog\Repositories\PostsRepositoryInterface, \GeekBrains\Blog\Repositories\CommentsRepositoryInterface, \GeekBrains\Blog\Repositories\LikesRepositoryInterface
+{}

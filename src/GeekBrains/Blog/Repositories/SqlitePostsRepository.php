@@ -22,6 +22,9 @@ class SqlitePostsRepository extends SqliteRepository implements PostsRepositoryI
         ]);
     }
 
+    /**
+     * @throws PostNotFoundException
+     */
     public function get(int $id): Post
     {
         $statement = $this->connection->prepare(
@@ -46,5 +49,21 @@ class SqlitePostsRepository extends SqliteRepository implements PostsRepositoryI
             $result['title'], 
             $result['text'],
         );
+    }
+
+    /**
+     * @throws PostNotFoundException
+     */
+    public function delete(int $id): void
+    {
+        if ($this->get($id)) {
+            $statement = $this->connection->prepare(
+                'DELETE FROM posts WHERE id = :id'
+            );
+
+            $statement->execute([
+                ':id' => $id
+            ]);
+        }
     }
 }

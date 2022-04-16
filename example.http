@@ -12,5 +12,21 @@
 #"title": "some title"
 #}
 
+#POST http://127.0.0.1:8000/posts/comment
+#
+#{
+#"author_id": "40",
+#"post_id": "16",
+#"text": "new comment text+"
+#}
+
+#DELETE http://127.0.0.1:8000/posts?id=28
+
+POST http://127.0.0.1:8000/likes/create
+
+{
+"post_id": "30",
+"user_id": "43"
+}
 
 

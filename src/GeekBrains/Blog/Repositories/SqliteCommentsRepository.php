@@ -22,6 +22,9 @@ class SqliteCommentsRepository extends SqliteRepository implements CommentsRepos
         ]);
     }
 
+    /**
+     * @throws CommentNotFoundException
+     */
     public function get(int $id): Comment
     {
         $statement = $this->connection->prepare(
