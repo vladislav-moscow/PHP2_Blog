@@ -31,7 +31,7 @@ function getResult($type, $faker): Comment|Name|Post
             )
         )
     };
-}
+} 
 
 function getName($faker): Name
 {
