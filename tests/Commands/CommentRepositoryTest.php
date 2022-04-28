@@ -8,10 +8,8 @@ use GeekBrains\Blog\Commands\Arguments;
 use GeekBrains\Blog\Commands\CreateCommentCommand;
 use GeekBrains\Blog\Exceptions\ArgumentsException;
 use GeekBrains\Blog\Exceptions\CommentNotFoundException;
-use GeekBrains\Blog\Like;
 use GeekBrains\Blog\Repositories\CommentsRepositoryInterface;
 use GeekBrains\Blog\Repositories\SqliteCommentsRepository;
-use GeekBrains\Blog\User;
 use PHPUnit\Framework\TestCase;
 
 class CommentRepositoryTest extends TestCase
@@ -47,21 +45,6 @@ class CommentRepositoryTest extends TestCase
             {
                 return $this->called;
             }
-
-            public function getByPostId(int $id): Like
-            {
-                // TODO: Implement getByPostId() method.
-            }
-
-            public function delete(int $id): void
-            {
-                // TODO: Implement delete() method.
-            }
-
-            public function getByUsername(string $username): User
-            {
-                // TODO: Implement getByUsername() method.
-            }
         };
 
         // Передаём наш мок в команду
@@ -73,7 +56,7 @@ class CommentRepositoryTest extends TestCase
         // Запускаем команду
         $command->handle(new Arguments([
             'post_id' => '1',
-            'author_id' => '1',
+            'user_id' => '1',
             'text' => 'text',
         ]));
 

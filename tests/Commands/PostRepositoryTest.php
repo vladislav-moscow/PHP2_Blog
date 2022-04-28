@@ -4,14 +4,12 @@ namespace Commands;
 
 use GeekBrains\Blog\Commands\DummyLogger;
 use GeekBrains\Blog\Exceptions\ArgumentsException;
-use GeekBrains\Blog\Like;
 use GeekBrains\Blog\Post;
 use GeekBrains\Blog\Commands\Arguments;
 use GeekBrains\Blog\Commands\CreatePostCommand;
 use GeekBrains\Blog\Exceptions\PostNotFoundException;
 use GeekBrains\Blog\Repositories\PostsRepositoryInterface;
 use GeekBrains\Blog\Repositories\SqlitePostsRepository;
-use GeekBrains\Blog\User;
 use PHPUnit\Framework\TestCase;
 
 class PostRepositoryTest extends TestCase
@@ -49,16 +47,6 @@ class PostRepositoryTest extends TestCase
             }
 
             public function delete(int $id): void {}
-
-            public function getByPostId(int $id): Like
-            {
-                // TODO: Implement getByPostId() method.
-            }
-
-            public function getByUsername(string $username): User
-            {
-                // TODO: Implement getByUsername() method.
-            }
         };
 
         // Передаём наш мок в команду
@@ -69,7 +57,7 @@ class PostRepositoryTest extends TestCase
 
         // Запускаем команду
         $command->handle(new Arguments([
-            'author_id' => '1',
+            'user_id' => '1',
             'title' => 'title',
             'text' => 'text',
         ]));
